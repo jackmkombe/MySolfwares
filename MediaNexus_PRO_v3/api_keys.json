@@ -1,0 +1,13 @@
+{
+  "omdb": "",
+  "tmdb": "",
+  "rawg": "",
+  "igdb": "",
+  "igdb_client_id": "",
+  "notes": {
+    "omdb": "Obtenez votre clé gratuite sur https://www.omdbapi.com/",
+    "tmdb": "Obtenez votre clé gratuite sur https://developers.themoviedb.org/",
+    "rawg": "Obtenez votre clé gratuite sur https://rawg.io/apidocs",
+    "igdb": "Obtenez vos clés sur https://api-docs.igdb.com/ (nécessite Client ID et Access Token)"
+  }
+}
