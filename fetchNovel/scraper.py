@@ -93,6 +93,107 @@ class NovelScraper:
             self.update_log(f"Translation error: {e}")
             return text # Return original if translation fails
 
+    def parse_selector(self, selector_str):
+        """Parse CSS selector into components with support for multiple patterns"""
+        if not selector_str:
+            return []
+        
+        patterns = []
+        # Split by comma for multiple selectors
+        for selector in selector_str.split(','):
+            selector = selector.strip()
+            if selector:
+                patterns.append(selector)
+        return patterns
+    
+    def find_content_by_selector(self, soup, selector_patterns):
+        """Find content using multiple selector strategies"""
+        import re
+        
+        for pattern in selector_patterns:
+            try:
+                element = None
+                
+                # CSS selector parsing
+                if pattern.startswith('#'):
+                    # ID selector
+                    element = soup.find(id=pattern[1:])
+                elif pattern.startswith('.'):
+                    # Class selector - handle multiple classes
+                    classes = pattern[1:].split('.')
+                    element = soup.find(class_=lambda x: x and all(cls in x for cls in classes))
+                elif '[' in pattern and ']' in pattern:
+                    # Attribute selector like [aria-label="content"]
+                    attr_match = re.search(r'\[([^=]+)(?:="([^"]+)")?\]', pattern)
+                    if attr_match:
+                        attr_name = attr_match.group(1)
+                        attr_value = attr_match.group(2)
+                        if attr_value:
+                            element = soup.find(attrs={attr_name: attr_value})
+                        else:
+                            element = soup.find(attrs={attr_name: True})
+                else:
+                    # Try as tag name or direct ID/class
+                    element = soup.find(id=pattern) or soup.find(class_=pattern) or soup.find(pattern)
+                
+                if element:
+                    return element
+                    
+            except Exception as e:
+                self.update_log(f"Selector pattern '{pattern}' failed: {e}")
+                continue
+        
+        return None
+    
+    def find_content_fallback(self, soup):
+        """Fallback strategies to find novel content"""
+        candidates = []
+        
+        # Strategy 1: Common content containers
+        common_selectors = [
+            '#readcontent', '.readcontent', '#content', '.content',
+            '.post-content', '.entry-content', '.article-content',
+            '.td-post-content', '.tdb-single-content', '.single-content',
+            '[aria-label*="content"]', '[role="main"]',
+            '.tdb-block-inner', '.td-fix-index'
+        ]
+        
+        for selector in common_selectors:
+            element = self.find_content_by_selector(soup, [selector])
+            if element:
+                text_length = len(element.get_text().strip())
+                if text_length > 200:  # Reasonable content length
+                    candidates.append((element, text_length))
+        
+        # Strategy 2: Find divs with large text content
+        for div in soup.find_all('div'):
+            text = div.get_text().strip()
+            if len(text) > 500:  # Substantial content
+                # Check if it looks like novel content (has paragraphs)
+                paragraphs = div.find_all('p')
+                if len(paragraphs) >= 2 or '\n\n' in text:
+                    candidates.append((div, len(text)))
+        
+        # Strategy 3: Look for elements with novel-related keywords
+        novel_keywords = ['chapter', 'chap', 'novel', 'story', 'read']
+        for element in soup.find_all(['div', 'article', 'section']):
+            classes = ' '.join(element.get('class', []))
+            id_attr = element.get('id', '')
+            aria_label = element.get('aria-label', '')
+            
+            combined_text = f"{classes} {id_attr} {aria_label}".lower()
+            if any(keyword in combined_text for keyword in novel_keywords):
+                text_length = len(element.get_text().strip())
+                if text_length > 300:
+                    candidates.append((element, text_length))
+        
+        # Return the candidate with most content
+        if candidates:
+            candidates.sort(key=lambda x: x[1], reverse=True)
+            return candidates[0][0]
+        
+        return None
+
     def fetch_chapter(self, url):
         try:
             # Stealth: Random delay
@@ -108,24 +209,25 @@ class NovelScraper:
                     
                     soup = BeautifulSoup(response.text, "html.parser")
                     
-                    # 3. Find Content
+                    # 3. Find Content with robust selector
                     content_div = None
-                    if self.selector and self.selector.startswith("#"):
-                        content_div = soup.find(id=self.selector[1:])
-                    elif self.selector and self.selector.startswith("."):
-                        content_div = soup.find(class_=self.selector[1:])
-                    elif self.selector:
-                        content_div = soup.find(id=self.selector) or soup.find(class_=self.selector)
+                    selector_patterns = self.parse_selector(self.selector)
                     
+                    # Try user-provided selectors first
+                    if selector_patterns:
+                        content_div = self.find_content_by_selector(soup, selector_patterns)
+                    
+                    # Fallback to automatic detection
                     if not content_div:
-                        content_div = soup.find(id="readcontent")
+                        content_div = self.find_content_fallback(soup)
                     
                     if content_div:
                         content_found = True
+                        self.update_log(f"✓ Found content using selector: {content_div.get('id', content_div.get('class', 'unknown'))}")
                         break
                 except Exception as e:
                     if attempt == 0:
-                        self.update_log(f"⚠️ Problème sur {url} (tentative 1)...")
+                        self.update_log(f"⚠️ Problème sur {url} (tentative 1): {str(e)[:50]}...")
                         time.sleep(2)
                         continue
                 

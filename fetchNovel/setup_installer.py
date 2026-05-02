@@ -8,9 +8,10 @@ ctk_path = os.path.dirname(customtkinter.__file__)
 
 # Dependencies are automatically detected, but it might need fine tuning.
 build_exe_options = {
-    "packages": ["os", "requests", "bs4", "docx", "reportlab", "customtkinter", "tkinter"],
-    "includes": ["scraper"],
-    "include_files": ["README.md", (ctk_path, "lib/customtkinter")],
+    "packages": ["os", "sys", "requests", "bs4", "docx", "reportlab", "customtkinter", "tkinter", "threading", "re", "time", "random", "deep_translator"],
+    "includes": ["scraper", "app"],
+    "include_files": [(ctk_path, "lib/customtkinter")],
+    "excludes": ["matplotlib", "numpy", "scipy", "PIL"],
 }
 
 # base="Win64GUI" should be used for GUI apps

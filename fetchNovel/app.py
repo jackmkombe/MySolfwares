@@ -56,23 +56,30 @@ class App(ctk.CTk):
         # We'll use two rows for the 4 small inputs
         
         # Row 1: Selector & Batch
-        self.add_label("Sélecteur de contenu (ID/Class)", 2, 0)
-        self.selector_entry = self.add_entry("#readcontent", 3, 0)
+        self.add_label("Sélecteur de contenu (CSS)", 2, 0)
+        self.selector_entry = self.add_entry("#readcontent, .tdb-single-content, [aria-label*=\"content\"]", 3, 0)
         self.selector_entry.grid(padx=(0, 12)) # 12px right
-
+        
         self.add_label("Chapitres par fichier", 2, 1)
         self.batch_entry = self.add_entry("10", 3, 1)
         self.batch_entry.grid(padx=(12, 0)) # 12px left
         self.batch_entry.insert(0, "10")
+        
+        # Selector help text
+        self.help_label = ctk.CTkLabel(self.main_container, 
+                                      text="💡 Ex: #id, .class, .class1.class2, [attr=\"value\"], séparez par ,",
+                                      font=ctk.CTkFont(family="Segoe UI Variable Small", size=10),
+                                      text_color=("#666666", "#999999"))
+        self.help_label.grid(row=4, column=0, columnspan=2, sticky="w", pady=(0, 10))
 
         # Row 2: Total & Delay
-        self.add_label("Total à récupérer", 4, 0)
-        self.total_entry = self.add_entry("50", 5, 0)
+        self.add_label("Total à récupérer", 5, 0)
+        self.total_entry = self.add_entry("50", 6, 0)
         self.total_entry.grid(padx=(0, 12))
         self.total_entry.insert(0, "50")
 
-        self.add_label("Délai furtif (secondes)", 4, 1)
-        self.delay_entry = self.add_entry("2", 5, 1)
+        self.add_label("Délai furtif (secondes)", 5, 1)
+        self.delay_entry = self.add_entry("2", 6, 1)
         self.delay_entry.grid(padx=(12, 0))
         self.delay_entry.insert(0, "2")
 
@@ -82,12 +89,12 @@ class App(ctk.CTk):
                                            variable=self.translate_var,
                                            font=ctk.CTkFont(family="Segoe UI Variable Small", size=13),
                                            fg_color=ACCENT_BLUE, hover_color=ACCENT_HOVER)
-        self.translate_cb.grid(row=6, column=0, columnspan=2, sticky="w", pady=(15, 5))
+        self.translate_cb.grid(row=7, column=0, columnspan=2, sticky="w", pady=(15, 5))
 
         # Path
-        self.add_label("Dossier d'enregistrement", 7, 0, 2)
+        self.add_label("Dossier d'enregistrement", 8, 0, 2)
         self.path_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
-        self.path_frame.grid(row=8, column=0, columnspan=2, sticky="ew", pady=(0, 20))
+        self.path_frame.grid(row=9, column=0, columnspan=2, sticky="ew", pady=(0, 20))
         self.path_frame.grid_columnconfigure(0, weight=1)
         
         self.dir_entry = ctk.CTkEntry(self.path_frame, height=40, corner_radius=8)
@@ -102,7 +109,7 @@ class App(ctk.CTk):
 
         # 3. ACTION BUTTONS
         self.btn_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
-        self.btn_frame.grid(row=8, column=0, columnspan=2, sticky="ew", pady=10)
+        self.btn_frame.grid(row=10, column=0, columnspan=2, sticky="ew", pady=10)
         
         self.start_btn = ctk.CTkButton(self.btn_frame, text="Démarrer le fetching", height=48, 
                                       fg_color=ACCENT_BLUE, hover_color=ACCENT_HOVER, corner_radius=10,
@@ -118,10 +125,10 @@ class App(ctk.CTk):
 
         # 4. LOGS
         self.log_label = ctk.CTkLabel(self.main_container, text="Activité & Logs", font=ctk.CTkFont(family="Segoe UI Variable Small", size=14, weight="bold"))
-        self.log_label.grid(row=10, column=0, sticky="w", pady=(15, 5))
+        self.log_label.grid(row=11, column=0, sticky="w", pady=(15, 5))
         self.textbox = ctk.CTkTextbox(self.main_container, corner_radius=10, border_width=1)
-        self.textbox.grid(row=11, column=0, columnspan=2, sticky="nsew", pady=(0, 20))
-        self.main_container.grid_rowconfigure(11, weight=1)
+        self.textbox.grid(row=12, column=0, columnspan=2, sticky="nsew", pady=(0, 20))
+        self.main_container.grid_rowconfigure(12, weight=1)
 
         self.scraper = None
 

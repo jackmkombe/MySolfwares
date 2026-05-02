@@ -1,0 +1,172 @@
+# Exemples de sélecteurs CSS pour FetchNovel
+
+## 📚 Sites populaires et leurs sélecteurs
+
+### NovelHi.com
+```
+#readcontent, .entry-content, .post-content
+```
+
+### MyDramaNovel.com
+```
+.td_block_wrap.tdb_single_content, .tdb-block-inner, [aria-label*="content"]
+.tdb-single-content, .td-post-content, .td-fix-index
+```
+
+### NovelUpdates.com
+```
+#readcontent, .entry-content, .post-entry
+```
+
+### WuxiaWorld.com
+```
+#chapter-content, .chapter-content, .entry-content
+```
+
+### RoyalRoad.com
+```
+.chapter-content, .page-content, .entry-content
+```
+
+## 🎯 Sélecteurs universels (à essayer en premier)
+
+### Sélecteur de base recommandé
+```
+#readcontent, .readcontent, #content, .content
+```
+
+### Sélecteurs avancés
+```
+#readcontent, .readcontent, #content, .content, .post-content, .entry-content, .article-content, .td-post-content, .tdb-single-content, .single-content, [aria-label*="content"], [role="main"], .tdb-block-inner, .td-fix-index
+```
+
+## 🔍 Types de sélecteurs expliqués
+
+### 1. Sélecteurs par ID
+```css
+#readcontent        /* Élément avec id="readcontent" */
+#chapter-content    /* Élément avec id="chapter-content" */
+#main-content      /* Élément avec id="main-content" */
+```
+
+### 2. Sélecteurs par classe simple
+```css
+.content           /* Élément avec class="content" */
+.entry-content     /* Élément avec class="entry-content" */
+.post-content      /* Élément avec class="post-content" */
+```
+
+### 3. Sélecteurs par classe multiple (pour classes complexes)
+```css
+.td_block_wrap.tdb_single_content  /* Élément avec ces deux classes */
+.tdb-single-content.tdb-block-inner  /* Élément avec ces deux classes */
+.entry-content.post-content     /* Élément avec ces deux classes */
+```
+
+### 4. Sélecteurs par attribut
+```css
+[aria-label="content"]           /* Attribut exact */
+[aria-label*="content"]          /* Attribut contenant "content" */
+[role="main"]                     /* Rôle principal */
+[data-content="chapter"]          /* Attribut data personnalisé */
+```
+
+## 🛠️ Combinaisons puissantes
+
+### Pour sites WordPress
+```
+.entry-content, .post-content, .article-content, .page-content
+```
+
+### Pour sites avec thèmes modernes
+```
+.td-post-content, .tdb-single-content, .single-content
+```
+
+### Pour sites avec aria-labels
+```
+[aria-label*="content"], [aria-label*="chapter"], [role="main"]
+```
+
+### Sélecteur universel complet
+```
+#readcontent, .readcontent, #content, .content, .post-content, .entry-content, .article-content, .td-post-content, .tdb-single-content, .single-content, [aria-label*="content"], [role="main"], .tdb-block-inner, .td-fix-index, .chapter-content, .page-content
+```
+
+## 🔧 Conseils d'utilisation
+
+### 1. Commencer simple
+```css
+#readcontent
+```
+
+### 2. Ajouter des alternatives
+```css
+#readcontent, .entry-content
+```
+
+### 3. Inclure les attributs
+```css
+#readcontent, .entry-content, [aria-label*="content"]
+```
+
+### 4. Utiliser le sélecteur complet
+```css
+#readcontent, .readcontent, #content, .content, .post-content, .entry-content, .article-content, .td-post-content, .tdb-single-content, .single-content, [aria-label*="content"], [role="main"], .tdb-block-inner, .td-fix-index
+```
+
+## 🎲 Sélecteurs par type de site
+
+### Blogs WordPress
+```
+.entry-content, .post-content, .article-content
+```
+
+### Sites de novels spécialisés
+```
+#chapter-content, .chapter-content, .novel-content
+```
+
+### Sites avec thèmes newspaper (comme MyDramaNovel)
+```
+.td_block_wrap.tdb_single_content, .tdb-block-inner, .td-fix-index
+```
+
+### Sites génériques
+```
+#content, .content, #main, .main, [role="main"]
+```
+
+## ⚡ Sélecteurs rapides à copier-coller
+
+### Débutant
+```
+#readcontent, .content
+```
+
+### Intermédiaire
+```
+#readcontent, .readcontent, #content, .content, .post-content, .entry-content
+```
+
+### Avancé
+```
+#readcontent, .readcontent, #content, .content, .post-content, .entry-content, .article-content, .td-post-content, .tdb-single-content, .single-content, [aria-label*="content"], [role="main"]
+```
+
+### Expert (recommandé)
+```
+#readcontent, .readcontent, #content, .content, .post-content, .entry-content, .article-content, .td-post-content, .tdb-single-content, .single-content, [aria-label*="content"], [role="main"], .tdb-block-inner, .td-fix-index, .chapter-content, .page-content, .novel-content
+```
+
+## 📝 Notes importantes
+
+1. **Séparateur** : Utilisez des virgules pour séparer les sélecteurs
+2. **Ordre** : Les sélecteurs sont testés dans l'ordre
+3. **Priorité** : Mettez les sélecteurs les plus probables en premier
+4. **Détection automatique** : Si aucun ne fonctionne, FetchNovel essaie automatiquement
+5. **Tests** : Commencez avec 1-2 chapitres pour tester les sélecteurs
+
+---
+
+**Conseil** : Utilisez le sélecteur "Expert" pour une compatibilité maximale avec la plupart des sites de novels.
